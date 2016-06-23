@@ -1,0 +1,9 @@
+# bd-switcher
+
+Adds a keyboard shortcut to quickly switch between channels on the current server.
+
+Use `Control-K` (`Command-K` in OS X) to open the dialog.
+
+Type to filter the channel list, use up/down arrow keys to change the selection, and enter to confirm.
+
+Example: http://screencast.com/t/Nk80mRMc

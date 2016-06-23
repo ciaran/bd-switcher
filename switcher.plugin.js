@@ -34,6 +34,8 @@ switcher.prototype.showSwitcher = function(){
 }
 
 switcher.prototype.load = function(){
+	this.addStyles();
+
 	document.addEventListener('keydown', function(event){
 		var modifier = (process.platform == "darwin" ? event.metaKey : event.ctrlKey);
 		if (modifier && event.keyCode == 75) {
@@ -43,12 +45,26 @@ switcher.prototype.load = function(){
 	}.bind(this));
 };
 
+switcher.prototype.addStyles = function(){
+	var html = ' \
+		<style> \
+		#switcher-filter { width: 100%; } \
+		#switcher-list-container span:before { content: "#"; } \
+		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; xcolor: black; display: block; } \
+		#switcher-list-container span.selected { background-color: rgba(0, 0, 255, 0.12); } \
+		</style> \
+	';
+	$("head").append(html);
+};
+
 var Keys = {
 	ENTER: 13,
 	ESCAPE: 27,
 	UP: 38,
 	DOWN: 40,
-}
+};
+
+var CHANNEL_FILTER_LIST_QUERY = "#switcher-list-container span";
 
 var SwitcherDialog = function(channels, switcher) {
 	this.alertIdentifier = "switcher";
@@ -84,12 +100,12 @@ var SwitcherDialog = function(channels, switcher) {
 
 SwitcherDialog.prototype.setSelectionIndex = function(index){
 	this.selectionIndex = index;
-	$("#switcher-list-container a.selected").removeClass('selected');
-	$("#switcher-list-container a:nth-child("+(this.selectionIndex+1)+")").addClass('selected');
+	$(CHANNEL_FILTER_LIST_QUERY + ".selected").removeClass('selected');
+	$(CHANNEL_FILTER_LIST_QUERY + ":nth-child("+(this.selectionIndex+1)+")").addClass('selected');
 };
 
 SwitcherDialog.prototype.moveSelection = function(change){
-	var displayedChannelCount = $("#switcher-list-container a").length;
+	var displayedChannelCount = $(CHANNEL_FILTER_LIST_QUERY).length;
 	var index = this.selectionIndex + change;
 	if (index == displayedChannelCount)
 		index = 0;
@@ -99,7 +115,7 @@ SwitcherDialog.prototype.moveSelection = function(change){
 };
 
 SwitcherDialog.prototype.confirm = function(){
-	var selection = $("#switcher-list-container a.selected");
+	var selection = $(CHANNEL_FILTER_LIST_QUERY + ".selected");
 	this.switcher.goToChannel(selection.attr('data-channel-id'));
 	this.dismiss();
 };
@@ -120,7 +136,7 @@ SwitcherDialog.prototype.showChannels = function(channels){
 
 	$("#switcher-list-container").empty();
 	$(channels).each(function(){
-		var link = $('<a />', { text: this.title, "data-channel-id": this.id });
+		var link = $('<span />', { text: this.title, "data-channel-id": this.id });
 		link.on('click', function(){
 			var channelId = $(this).attr('data-channel-id');
 			switcher.goToChannel(channelId);
@@ -139,12 +155,6 @@ SwitcherDialog.prototype.dismiss = function(){
 SwitcherDialog.prototype.createDialog = function(){
 	var title = "Switcher";
 	var html = '\
-	<style> \
-	#switcher-filter { width: 100%; } \
-	#switcher-list-container a:before { content: "#"; } \
-	#switcher-list-container a { padding: 5px 5px; margin: 5px 0; border-radius: 5px; color: black; display: block; } \
-	#switcher-list-container a.selected { background-color: rgba(0, 0, 255, 0.12); } \
-	</style> \
 	<div id="bda-alert-'+this.alertIdentifier+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+this.alertIdentifier+'">\
 	    <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
 	        <div class="markdown-modal">\

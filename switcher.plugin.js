@@ -50,8 +50,8 @@ switcher.prototype.addStyles = function(){
 		<style> \
 		#switcher-filter { width: 100%; } \
 		#switcher-list-container span:before { content: "#"; } \
-		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; xcolor: black; display: block; } \
-		#switcher-list-container span.selected { background-color: rgba(0, 0, 255, 0.12); } \
+		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; display: block; } \
+		#switcher-list-container span.badge { font-size: 1em; line-height: 1em; font-weight: normal; } \
 		</style> \
 	';
 	$("head").append(html);
@@ -65,6 +65,7 @@ var Keys = {
 };
 
 var CHANNEL_FILTER_LIST_QUERY = "#switcher-list-container span";
+var SELECTED_CLASS = "badge";
 
 var SwitcherDialog = function(channels, switcher) {
 	this.alertIdentifier = "switcher";
@@ -100,8 +101,8 @@ var SwitcherDialog = function(channels, switcher) {
 
 SwitcherDialog.prototype.setSelectionIndex = function(index){
 	this.selectionIndex = index;
-	$(CHANNEL_FILTER_LIST_QUERY + ".selected").removeClass('selected');
-	$(CHANNEL_FILTER_LIST_QUERY + ":nth-child("+(this.selectionIndex+1)+")").addClass('selected');
+	$(CHANNEL_FILTER_LIST_QUERY + "." + SELECTED_CLASS).removeClass(SELECTED_CLASS);
+	$(CHANNEL_FILTER_LIST_QUERY + ":nth-child("+(this.selectionIndex+1)+")").addClass(SELECTED_CLASS);
 };
 
 SwitcherDialog.prototype.moveSelection = function(change){
@@ -115,7 +116,7 @@ SwitcherDialog.prototype.moveSelection = function(change){
 };
 
 SwitcherDialog.prototype.confirm = function(){
-	var selection = $(CHANNEL_FILTER_LIST_QUERY + ".selected");
+	var selection = $(CHANNEL_FILTER_LIST_QUERY + "." + SELECTED_CLASS);
 	this.switcher.goToChannel(selection.attr('data-channel-id'));
 	this.dismiss();
 };

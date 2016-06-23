@@ -48,7 +48,8 @@ switcher.prototype.load = function(){
 switcher.prototype.addStyles = function(){
 	var html = ' \
 		<style> \
-		#switcher-filter { width: 100%; } \
+		#switcher-header { margin: 0 auto; padding-bottom: 0; } \
+		#switcher-filter { width: 100%; font-weight: bold; height: 40px; font-size: 30px; padding: 4px; box-sizing: border-box; border: 0; } \
 		#switcher-list-container span:before { content: "#"; } \
 		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; display: block; } \
 		#switcher-list-container span.badge { font-size: 1em; line-height: 1em; font-weight: normal; } \
@@ -159,21 +160,18 @@ SwitcherDialog.prototype.createDialog = function(){
 	<div id="bda-alert-'+this.alertIdentifier+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+this.alertIdentifier+'">\
 	    <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
 	        <div class="markdown-modal">\
-	            <div class="markdown-modal-header">\
-	                <strong style="float:left"><span>Channel Switcher</span></strong>\
-	                <span></span>\
-	                <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+this.alertIdentifier+'").remove(); utils.removeBackdrop("'+this.alertIdentifier+'");\'></button>\
+	            <div class="markdown-modal-header" id="switcher-header">\
+	                <input type="text" id="switcher-filter" /> \
 	            </div>\
 	            <div class="scroller-wrap fade">\
 	                <div style="font-weight:700; padding-top: 0" class="scroller"> \
-	                    <input type="text" id="switcher-filter" /> \
 		                <div id="switcher-list-container"></div> \
 	                </div>\
 	            </div>\
 	            <div class="markdown-modal-footer">\
-	                <span style="float:right"> for support.</span>\
-	                <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
-	                <span style="float:right">Join </span>\
+	                <span style="float: right"> \
+		                Use <code>↑↓</code> to move, <code>↩</code> to select \
+	                </span> \
 	            </div>\
 	        </div>\
 	    </div>\

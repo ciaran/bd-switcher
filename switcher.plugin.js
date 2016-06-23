@@ -35,8 +35,11 @@ switcher.prototype.showSwitcher = function(){
 
 switcher.prototype.load = function(){
 	document.addEventListener('keydown', function(event){
-		if (event.metaKey && event.keyCode == 75)
+		var modifier = (process.platform == "darwin" ? event.metaKey : event.ctrlKey);
+		if (modifier && event.keyCode == 75) {
 			this.showSwitcher();
+			event.preventDefault();
+		}
 	}.bind(this));
 };
 

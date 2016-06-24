@@ -8,10 +8,10 @@ switcher.prototype.getName = function(){
 	return "Switcher";
 };
 switcher.prototype.getDescription = function(){
-	return "Switcher";
+	return "Use Control/Command+K to show quick channel switcher dialog.";
 };
 switcher.prototype.getVersion = function(){
-	return "0.0.1";
+	return "0.1";
 };
 
 switcher.prototype.goToChannel = function(id){

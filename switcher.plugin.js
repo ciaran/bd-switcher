@@ -11,19 +11,29 @@ switcher.prototype.getDescription = function(){
 	return "Use Control/Command+K to show quick channel switcher dialog.";
 };
 switcher.prototype.getVersion = function(){
-	return "0.1";
+	return "0.2";
 };
 
 switcher.prototype.goToChannel = function(id){
-	var link = $('.guild-channels .channel-text a[href="' + id + '"]')[0];
+	var link = $('.channel a[href="' + id + '"]')[0];
 	if(link)
 		link.click();
 };
 
 switcher.prototype.currentGuildChannelList = function(){
-	return $('.guild-channels .channel-text a').toArray().map(function(link){
-		var channelId = link.pathname;
-		return { title: $(link).text(), id: channelId };
+	return $('.guild-channels .channel-text a, .private-channels .private a').toArray().map(function(link){
+		var type = $(link.parentNode).hasClass("private") ? "private" : "channel"
+		var name = $(link).text();
+
+		var activity = $(link).find(".channel-activity").text();
+		if (activity.length > 0)
+			name = name.slice(0, -activity.length);
+
+		return {
+			title: name,
+			id: link.pathname,
+			type: type,
+		};
 	});
 };
 
@@ -50,7 +60,7 @@ switcher.prototype.addStyles = function(){
 		<style> \
 		#switcher-header { margin: 0 auto; padding-bottom: 0; } \
 		#switcher-filter { width: 100%; font-weight: bold; height: 40px; font-size: 30px; padding: 4px; box-sizing: border-box; border: 0; } \
-		#switcher-list-container span:before { content: "#"; } \
+		#switcher-list-container span.channel:before { content: "#"; } \
 		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; display: block; } \
 		#switcher-list-container span.badge { font-size: 1em; line-height: 1em; font-weight: normal; } \
 		</style> \
@@ -138,7 +148,7 @@ SwitcherDialog.prototype.showChannels = function(channels){
 
 	$("#switcher-list-container").empty();
 	$(channels).each(function(){
-		var link = $('<span />', { text: this.title, "data-channel-id": this.id });
+		var link = $('<span />', { text: this.title, "data-channel-id": this.id, class: this.type });
 		link.on('click', function(){
 			var channelId = $(this).attr('data-channel-id');
 			switcher.goToChannel(channelId);

@@ -123,11 +123,11 @@ SwitcherDialog.prototype.confirm = function(){
 };
 
 SwitcherDialog.prototype.updateFilter = function(){
-	var query = this.filterField.val();
+	var query = this.filterField.val().toLowerCase();
 	var list = this.channels;
 	if (query != '') {
 		list = list.filter(function(channel){
-			return channel.title.includes(query);
+			return channel.title.toLowerCase().includes(query);
 		});
 	}
 	this.showChannels(list);

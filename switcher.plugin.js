@@ -24,15 +24,27 @@ switcher.prototype.currentGuildChannelList = function(){
 	return $('.guild-channels .channel-text a, .private-channels .private a').toArray().map(function(link){
 		var type = $(link.parentNode).hasClass("private") ? "private" : "channel"
 		var name = $(link).text();
+		var image = null;
+		var status = null;
 
 		var activity = $(link).find(".channel-activity").text();
 		if (activity.length > 0)
 			name = name.slice(0, -activity.length);
 
+		var avatar = $(link).find(".avatar-small");
+		if (avatar.length > 0)
+			image = avatar.attr("style");
+
+		var statusEl = $(link).find(".status");
+		if (statusEl.length > 0)
+			status = statusEl.attr('class').split(" ").find(function(cl) { return cl.startsWith("status-"); })
+
 		return {
 			title: name,
 			id: link.pathname,
 			type: type,
+			image: image,
+			status: status,
 		};
 	});
 };
@@ -59,10 +71,11 @@ switcher.prototype.addStyles = function(){
 	var html = ' \
 		<style> \
 		#switcher-header { margin: 0 auto; padding-bottom: 0; } \
-		#switcher-filter { width: 100%; font-weight: bold; height: 40px; font-size: 30px; padding: 4px; box-sizing: border-box; border: 0; } \
-		#switcher-list-container span.channel:before { content: "#"; } \
-		#switcher-list-container span { padding: 5px 5px; margin: 5px 0; border-radius: 5px; display: block; } \
-		#switcher-list-container span.badge { font-size: 1em; line-height: 1em; font-weight: normal; } \
+		#switcher-filter { width: 100%; font-weight: bold; xheight: 40px; font-size: 30px; padding: 4px; box-sizing: border-box; border: 0; } \
+		#switcher-list-container > div { align-items: center; font-size: 14px; line-height: 1.25em; display: flex; padding: 5px 5px; margin: 5px 0; border-radius: 5px; width: 100%; } \
+		#switcher-list-container > div.badge { font-weight: normal; } \
+		#switcher-list-container .channel-title:before { content: "#"; } \
+		#switcher-list-container .status { border: 2px solid #2e3136; } \
 		</style> \
 	';
 	$("head").append(html);
@@ -75,7 +88,7 @@ var Keys = {
 	DOWN: 40,
 };
 
-var CHANNEL_FILTER_LIST_QUERY = "#switcher-list-container span";
+var CHANNEL_FILTER_LIST_QUERY = "#switcher-list-container > div";
 var SELECTED_CLASS = "badge";
 
 var SwitcherDialog = function(channels, switcher) {
@@ -143,12 +156,34 @@ SwitcherDialog.prototype.updateFilter = function(){
 	this.showChannels(list);
 };
 
+SwitcherDialog.prototype.createItem = function(item){
+	var link = $('<div />', {
+		"data-channel-id": item.id,
+		class: item.type
+	});
+
+	if (item.image) {
+		var image = $("<div />", {class: "avatar-small stop-animation"});
+
+		if (item.status)
+			image.append($("<div />", { class: "status " + item.status }))
+
+		image.attr("style", item.image)
+		link.append(image);
+	}
+
+	link.append($("<div />", { text: item.title, class: "channel-title" }))
+
+	return link;
+};
+
 SwitcherDialog.prototype.showChannels = function(channels){
+	var dialog = this;
 	var switcher = this.switcher;
 
 	$("#switcher-list-container").empty();
 	$(channels).each(function(){
-		var link = $('<span />', { text: this.title, "data-channel-id": this.id, class: this.type });
+		var link = dialog.createItem(this);
 		link.on('click', function(){
 			var channelId = $(this).attr('data-channel-id');
 			switcher.goToChannel(channelId);

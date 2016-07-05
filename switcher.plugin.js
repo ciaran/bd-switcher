@@ -215,7 +215,7 @@ SwitcherDialog.prototype.createDialog = function(){
 	            </div>\
 	            <div class="markdown-modal-footer">\
 	                <span style="float: right"> \
-		                Use <code>↑↓</code> to move, <code>↩</code> to select \
+		                Use <code>Arrow Keys</code> to move, <code>Enter</code> to select \
 	                </span> \
 	            </div>\
 	        </div>\
